@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { getBlogPosts, getSiteSettings, getProfile } from "@/lib/db";
+import { getProjects, getSiteSettings, getProfile } from "@/lib/db";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { BlogClientView } from "@/components/blog-client-view";
+import { ProjectsClientView } from "@/components/projects-client-view";
 import { ArrowLeft } from "lucide-react";
 
 export const revalidate = 0;
@@ -11,14 +11,14 @@ export const revalidate = 0;
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
-    title: `Blog & Articles — ${settings.siteName}`,
-    description: "Insights, architecture patterns, engineering thoughts, and web development articles.",
+    title: `Projects — ${settings.siteName}`,
+    description: "Explore curated software engineering projects, applications, and experiments.",
   };
 }
 
-export default async function BlogPage() {
-  const [posts, settings, profile] = await Promise.all([
-    getBlogPosts({ publishedOnly: true }),
+export default async function ProjectsPage() {
+  const [projects, settings, profile] = await Promise.all([
+    getProjects({ publishedOnly: true }),
     getSiteSettings(),
     getProfile(),
   ]);
@@ -41,19 +41,19 @@ export default async function BlogPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-mono text-neutral-500 uppercase tracking-wider mb-2">
               <span className="size-1.5 rounded-full bg-neutral-400" />
-              <span>Writing & Research</span>
+              <span>Portfolio</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 mb-3">
-              Articles & Essays
+              All Projects & Works
             </h1>
             <p className="text-neutral-600 dark:text-neutral-400 text-base max-w-2xl">
-              Deep dives on full-stack architecture, software scalability, frontend craft, and technical design.
+              A comprehensive showcase of web applications, developer tooling, open-source libraries, and interactive systems.
             </p>
           </div>
         </div>
 
-        {/* Filterable Blog Grid */}
-        <BlogClientView posts={posts} />
+        {/* Interactive Filterable Projects Grid */}
+        <ProjectsClientView projects={projects} />
       </main>
 
       <Footer

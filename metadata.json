@@ -1,0 +1,6 @@
+{
+  "name": "Alex Rivera Portfolio",
+  "description": "Modern, minimalist, and dynamic personal portfolio with dynamic database CMS, Admin Dashboard, and Aceternity Ripple Effect.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
