@@ -283,37 +283,46 @@ export const defaultBlogPosts = [
     title: "Architecting Modern Full-Stack Next.js Apps with Neon & Drizzle ORM",
     slug: "architecting-modern-fullstack-nextjs-neon-drizzle",
     excerpt: "A deep dive into building production-grade serverless web apps using Next.js App Router, Neon PostgreSQL over WebSockets, and zero-cost type safety with Drizzle ORM.",
-    content: `## The Modern Serverless Data Paradigm
-When building modern web applications on platforms like Vercel, traditional database connection pooling often introduces latency spikes and cold-start hurdles. Serverless PostgreSQL engines like **Neon** completely transform this dynamic by decoupling compute from storage.
+    content: `<h2>The Modern Serverless Data Paradigm</h2>
+<p>When building modern web applications on platforms like Vercel, traditional database connection pooling often introduces latency spikes and cold-start hurdles. Serverless PostgreSQL engines like <strong>Neon</strong> completely transform this dynamic by decoupling compute from storage.</p>
 
-### Why Drizzle ORM?
-Unlike heavy ORMs that abstract SQL away behind complex runtime layers, Drizzle acts as a transparent, type-safe query builder that compiles directly to raw SQL with **zero overhead**.
+<h2>Why Drizzle ORM?</h2>
+<p>Unlike heavy ORMs that abstract SQL away behind complex runtime layers, Drizzle acts as a transparent, type-safe query builder that compiles directly to raw SQL with <strong>zero overhead</strong>.</p>
 
-\`\`\`typescript
-import { drizzle } from "drizzle-orm/neon-serverless";
+<pre><code>import { drizzle } from "drizzle-orm/neon-serverless";
 import { pgTable, text, serial } from "drizzle-orm/pg-core";
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
-});
-\`\`\`
+});</code></pre>
 
-### Server Actions vs. Route Handlers
-In Next.js App Router, combining Server Actions with Drizzle guarantees:
-1. **End-to-End Type Safety**: Server-returned types flow directly to client components without intermediate JSON serialization schemas.
-2. **Atomic Invalidation**: \`revalidatePath\` updates the user interface instantly without full-page reloads.
-3. **Robust Security**: Credentials never leak to browser bundles.
+<h3>Server Actions vs. Route Handlers</h3>
+<p>In Next.js App Router, combining Server Actions with Drizzle guarantees:</p>
+<ul>
+  <li><strong>End-to-End Type Safety</strong>: Server-returned types flow directly to client components without intermediate JSON serialization schemas.</li>
+  <li><strong>Atomic Invalidation</strong>: <code>revalidatePath</code> updates the user interface instantly without full-page reloads.</li>
+  <li><strong>Robust Security</strong>: Credentials never leak to browser bundles.</li>
+</ul>
 
-### Summary
-By pairing Next.js with Neon and Drizzle ORM, developers achieve blazing fast deployments, seamless database branching, and sub-10ms query execution across global edge regions.`,
+<h2>Summary</h2>
+<p>By pairing Next.js with Neon and Drizzle ORM, developers achieve blazing fast deployments, seamless database branching, and sub-10ms query execution across global edge regions.</p>`,
+    thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80",
+    thumbnailAlt: "Next.js architecture with Neon PostgreSQL and Drizzle ORM",
     coverImageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80",
     category: "Architecture",
     tags: ["Next.js", "PostgreSQL", "Drizzle ORM", "TypeScript"],
+    author: "Alex Rivera",
+    status: "published" as const,
     readingTime: "6 min read",
     published: true,
     publishedAt: new Date("2026-02-18"),
+    seoTitle: "Architecting Modern Full-Stack Next.js Apps with Neon & Drizzle",
+    seoDescription: "Learn how to build production-grade serverless web apps using Next.js App Router, Neon PostgreSQL over WebSockets, and type safety with Drizzle ORM.",
+    seoKeywords: "Next.js, Neon PostgreSQL, Drizzle ORM, Serverless, TypeScript",
+    focusKeyword: "Next.js",
+    seoScore: 92,
     createdAt: new Date("2026-02-18"),
     updatedAt: new Date("2026-02-18"),
   },
@@ -322,32 +331,45 @@ By pairing Next.js with Neon and Drizzle ORM, developers achieve blazing fast de
     title: "Minimalist UI Craftsmanship: Principles Inspired by Vercel & Linear",
     slug: "minimalist-ui-craftsmanship-vercel-linear",
     excerpt: "Exploring the nuances of modern monochrome software design: mathematical typography scales, subtle borders, high negative space, and deliberate micro-interactions.",
-    content: `## The Essence of High-Craft Software Design
-Great developer tools don't rely on flashy gradient text or bloated decorative illustrations. Instead, applications like Vercel, Linear, and Supabase captivate users through **precision, restraint, and optical clarity**.
+    content: `<h2>The Essence of High-Craft Software Design</h2>
+<p>Great developer tools don't rely on flashy gradient text or bloated decorative illustrations. Instead, applications like Vercel, Linear, and Supabase captivate users through <strong>precision, restraint, and optical clarity</strong>.</p>
 
-### 1. The Power of Monochrome & Contrast
-Using a tightly controlled monochromatic palette allows content to take center stage. Grays should not be random hex codes; they should follow balanced contrast ratios:
-- Border lines at \`border-neutral-200\` and \`dark:border-neutral-800\`.
-- Subtle background elevations with \`bg-neutral-50\` and \`dark:bg-neutral-900\`.
-- Clear, uncompromised typography hierarchy.
+<h2>1. The Power of Monochrome & Contrast</h2>
+<p>Using a tightly controlled monochromatic palette allows content to take center stage. Grays should not be random hex codes; they should follow balanced contrast ratios:</p>
+<ul>
+  <li>Border lines at <code>border-neutral-200</code> and <code>dark:border-neutral-800</code>.</li>
+  <li>Subtle background elevations with <code>bg-neutral-50</code> and <code>dark:bg-neutral-900</code>.</li>
+  <li>Clear, uncompromised typography hierarchy.</li>
+</ul>
 
-### 2. Optical Whitespace & Rhythmic Spacing
-Whitespace is not empty space—it is the structure that gives typography breath. By maintaining strict padding multiples (\`p-4\`, \`p-6\`, \`p-8\`), layouts feel cohesive and calm.
+<h2>2. Optical Whitespace & Rhythmic Spacing</h2>
+<p>Whitespace is not empty space—it is the structure that gives typography breath. By maintaining strict padding multiples (<code>p-4</code>, <code>p-6</code>, <code>p-8</code>), layouts feel cohesive and calm.</p>
 
-### 3. Deliberate Micro-Interactions
-Every interactive element should respond with tactile immediacy:
-- Subtle scale transitions on hover (\`scale-[1.01]\`).
-- Smooth border-color shifts when active.
-- Light, physics-based entry animations.
+<h3>3. Deliberate Micro-Interactions</h3>
+<p>Every interactive element should respond with tactile immediacy:</p>
+<ul>
+  <li>Subtle scale transitions on hover (<code>scale-[1.01]</code>).</li>
+  <li>Smooth border-color shifts when active.</li>
+  <li>Light, physics-based entry animations.</li>
+</ul>
 
-### Conclusion
-Craftsmanship is not about how much you can add—it is about how much you can remove while elevating clarity and utility.`,
+<h2>Conclusion</h2>
+<p>Craftsmanship is not about how much you can add—it is about how much you can remove while elevating clarity and utility.</p>`,
+    thumbnail: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200&auto=format&fit=crop&q=80",
+    thumbnailAlt: "Minimalist UI Craftsmanship design principles",
     coverImageUrl: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200&auto=format&fit=crop&q=80",
     category: "Design & UX",
     tags: ["UI/UX", "Design Systems", "Tailwind CSS", "Vercel"],
+    author: "Alex Rivera",
+    status: "published" as const,
     readingTime: "5 min read",
     published: true,
     publishedAt: new Date("2026-01-28"),
+    seoTitle: "Minimalist UI Craftsmanship: Principles Inspired by Vercel & Linear",
+    seoDescription: "Exploring the nuances of modern monochrome software design: typography scales, subtle borders, high negative space, and deliberate micro-interactions.",
+    seoKeywords: "UI/UX, Minimalist Design, Vercel, Linear, Design Systems",
+    focusKeyword: "Minimalist UI",
+    seoScore: 88,
     createdAt: new Date("2026-01-28"),
     updatedAt: new Date("2026-01-28"),
   },
@@ -356,14 +378,13 @@ Craftsmanship is not about how much you can add—it is about how much you can r
     title: "Mastering React 19: Server Actions, Optimistic State, and Suspense",
     slug: "mastering-react-19-server-actions-optimistic-state",
     excerpt: "How React 19's useActionState, useOptimistic, and Server Functions streamline data mutations and eliminate boilerplate code.",
-    content: `## The Next Evolution of React Data Mutability
-React 19 brings unified primitives that simplify full-stack state management. Gone are the days of manual \`isLoading\`, \`error\`, and \`success\` booleans sprinkled across every form component.
+    content: `<h2>The Next Evolution of React Data Mutability</h2>
+<p>React 19 brings unified primitives that simplify full-stack state management. Gone are the days of manual <code>isLoading</code>, <code>error</code>, and <code>success</code> booleans sprinkled across every form component.</p>
 
-### \`useActionState\` in Action
-With \`useActionState\`, form submissions naturally encapsulate validation errors and pending states without third-party form wrappers:
+<h2><code>useActionState</code> in Action</h2>
+<p>With <code>useActionState</code>, form submissions naturally encapsulate validation errors and pending states without third-party form wrappers:</p>
 
-\`\`\`tsx
-"use client";
+<pre><code>"use client";
 import { useActionState } from "react";
 import { submitContactForm } from "@/app/actions";
 
@@ -371,27 +392,35 @@ export function ContactForm() {
   const [state, formAction, isPending] = useActionState(submitContactForm, null);
 
   return (
-    <form action={formAction}>
-      <input name="email" required />
-      <button disabled={isPending}>
+    &lt;form action={formAction}&gt;
+      &lt;input name="email" required /&gt;
+      &lt;button disabled={isPending}&gt;
         {isPending ? "Submitting..." : "Send Message"}
-      </button>
-    </form>
+      &lt;/button&gt;
+    &lt;/form&gt;
   );
-}
-\`\`\`
+}</code></pre>
 
-### Zero-Flicker Optimistic Updates
-Pairing \`useOptimistic\` with Server Actions creates instantaneous user feedback while background verification runs securely on the server.
+<h2>Zero-Flicker Optimistic Updates</h2>
+<p>Pairing <code>useOptimistic</code> with Server Actions creates instantaneous user feedback while background verification runs securely on the server.</p>
 
-### Key Takeaways
-Embracing modern React primitives leads to cleaner codebases, fewer dependencies, and better web performance.`,
+<h2>Key Takeaways</h2>
+<p>Embracing modern React primitives leads to cleaner codebases, fewer dependencies, and better web performance.</p>`,
+    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&auto=format&fit=crop&q=80",
+    thumbnailAlt: "Mastering React 19 Server Actions and Optimistic State",
     coverImageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&auto=format&fit=crop&q=80",
     category: "Engineering",
     tags: ["React 19", "JavaScript", "Frontend", "Performance"],
+    author: "Alex Rivera",
+    status: "published" as const,
     readingTime: "4 min read",
     published: true,
     publishedAt: new Date("2025-12-14"),
+    seoTitle: "Mastering React 19: Server Actions, Optimistic State & Suspense",
+    seoDescription: "Discover how React 19's useActionState, useOptimistic, and Server Functions streamline data mutations and eliminate boilerplate frontend code.",
+    seoKeywords: "React 19, Server Actions, useOptimistic, useActionState",
+    focusKeyword: "React 19",
+    seoScore: 85,
     createdAt: new Date("2025-12-14"),
     updatedAt: new Date("2025-12-14"),
   },

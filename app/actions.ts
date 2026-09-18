@@ -228,21 +228,43 @@ export async function saveBlogPostAdminAction(data: {
   slug?: string;
   excerpt: string;
   content: string;
-  coverImageUrl: string;
+  thumbnail?: string;
+  thumbnailAlt?: string;
+  coverImageUrl?: string;
   category: string;
   tags: string[];
+  author?: string;
+  status?: string;
   readingTime?: string;
   published: boolean;
+  publishedAt?: Date;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
+  focusKeyword?: string;
+  seoScore?: number;
 }) {
   const session = await getSession();
   if (!session) throw new Error("Unauthorized");
 
   const slug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const thumbnail = data.thumbnail || data.coverImageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80";
+
+  const payload = {
+    ...data,
+    slug,
+    thumbnail,
+    coverImageUrl: thumbnail,
+    thumbnailAlt: data.thumbnailAlt || data.title,
+    author: data.author || "Alex Rivera",
+    status: data.status || (data.published ? "published" : "draft"),
+    published: data.published,
+  };
 
   if (data.id) {
-    await updateBlogPost(data.id, { ...data, slug });
+    await updateBlogPost(data.id, payload);
   } else {
-    await createBlogPost({ ...data, slug });
+    await createBlogPost(payload);
   }
 
   revalidatePath("/");

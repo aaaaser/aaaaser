@@ -2,7 +2,7 @@
 
 import React, { useSyncExternalStore } from "react";
 import { useTheme } from "./theme-provider";
-import { Sun, Moon, Laptop } from "lucide-react";
+import { Sun, Moon, Monitor } from "lucide-react";
 
 const emptySubscribe = () => () => {};
 
@@ -67,7 +67,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
             : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
         }`}
       >
-        <Laptop className="size-3.5" />
+        <Monitor className="size-3.5" />
       </button>
     </div>
   );

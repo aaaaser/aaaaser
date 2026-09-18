@@ -453,6 +453,19 @@ export async function getBlogPostBySlug(slug: string): Promise<typeof schema.blo
   return memoryStore.blogPosts.find((p) => p.slug === slug) || null;
 }
 
+export async function getBlogPostById(id: number): Promise<typeof schema.blogPosts.$inferSelect | null> {
+  const db = getDb();
+  if (db) {
+    try {
+      const rows = await db.select().from(schema.blogPosts).where(eq(schema.blogPosts.id, id));
+      if (rows.length > 0) return rows[0];
+    } catch (e) {
+      console.warn("[Database Error] getBlogPostById failed:", e);
+    }
+  }
+  return memoryStore.blogPosts.find((p) => p.id === id) || null;
+}
+
 export async function createBlogPost(data: typeof schema.blogPosts.$inferInsert): Promise<typeof schema.blogPosts.$inferSelect> {
   const db = getDb();
   if (db) {
@@ -465,18 +478,28 @@ export async function createBlogPost(data: typeof schema.blogPosts.$inferInsert)
   }
   const words = (data.content || "").split(/\s+/).length;
   const readingTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
+  const thumbnail = data.thumbnail || data.coverImageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80";
   const newPost: typeof schema.blogPosts.$inferSelect = {
     id: memoryStore.blogPosts.length > 0 ? Math.max(...memoryStore.blogPosts.map((b) => b.id)) + 1 : 1,
     title: data.title,
     slug: data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
     excerpt: data.excerpt,
     content: data.content,
-    coverImageUrl: data.coverImageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80",
+    thumbnail: thumbnail,
+    thumbnailAlt: data.thumbnailAlt || data.title,
+    coverImageUrl: thumbnail,
     category: data.category || "Engineering",
     tags: (data.tags as string[]) || [],
+    author: data.author || "Alex Rivera",
+    status: (data.status as "draft" | "published") || (data.published === false ? "draft" : "published"),
     readingTime: data.readingTime ?? readingTime,
     published: data.published ?? true,
     publishedAt: data.publishedAt || new Date(),
+    seoTitle: data.seoTitle || data.title,
+    seoDescription: data.seoDescription || data.excerpt,
+    seoKeywords: data.seoKeywords || "",
+    focusKeyword: data.focusKeyword || "",
+    seoScore: data.seoScore || 0,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -500,11 +523,23 @@ export async function updateBlogPost(id: number, data: Partial<typeof schema.blo
   }
   const index = memoryStore.blogPosts.findIndex((b) => b.id === id);
   if (index !== -1) {
+    const existing = memoryStore.blogPosts[index];
+    const thumbnail = data.thumbnail !== undefined ? data.thumbnail : (data.coverImageUrl !== undefined ? data.coverImageUrl : existing.thumbnail);
     memoryStore.blogPosts[index] = {
-      ...memoryStore.blogPosts[index],
+      ...existing,
       ...data,
-      readingTime: data.readingTime !== undefined ? data.readingTime : memoryStore.blogPosts[index].readingTime,
-      tags: (data.tags as string[]) || memoryStore.blogPosts[index].tags,
+      thumbnail: thumbnail,
+      thumbnailAlt: data.thumbnailAlt !== undefined ? data.thumbnailAlt : existing.thumbnailAlt,
+      coverImageUrl: thumbnail || existing.coverImageUrl,
+      author: data.author !== undefined ? data.author : existing.author,
+      status: (data.status as "draft" | "published") || existing.status,
+      seoTitle: data.seoTitle !== undefined ? data.seoTitle : existing.seoTitle,
+      seoDescription: data.seoDescription !== undefined ? data.seoDescription : existing.seoDescription,
+      seoKeywords: data.seoKeywords !== undefined ? data.seoKeywords : existing.seoKeywords,
+      focusKeyword: data.focusKeyword !== undefined ? data.focusKeyword : existing.focusKeyword,
+      seoScore: data.seoScore !== undefined ? data.seoScore : existing.seoScore,
+      readingTime: data.readingTime !== undefined ? data.readingTime : existing.readingTime,
+      tags: (data.tags as string[]) || existing.tags,
       updatedAt: new Date(),
     };
     return memoryStore.blogPosts[index];

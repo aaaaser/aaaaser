@@ -9,12 +9,21 @@ export interface BlogPostItem {
   slug: string;
   excerpt: string;
   content: string;
+  thumbnail?: string | null;
+  thumbnailAlt?: string | null;
   coverImageUrl: string;
   category: string;
   tags: string[];
+  author?: string | null;
+  status?: string | null;
   readingTime: string;
   published: boolean;
   publishedAt: Date;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoKeywords?: string | null;
+  focusKeyword?: string | null;
+  seoScore?: number | null;
 }
 
 export function BlogCard({ post }: { post: BlogPostItem }) {
@@ -23,14 +32,16 @@ export function BlogCard({ post }: { post: BlogPostItem }) {
     day: "numeric",
     year: "numeric",
   });
+  const imageSrc = post.thumbnail || post.coverImageUrl;
+  const imageAlt = post.thumbnailAlt || post.title;
 
   return (
     <article className="group rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden flex flex-col justify-between hover:border-neutral-400 dark:hover:border-neutral-700 transition-all duration-300 hover:shadow-xs">
       <div>
         <Link href={`/blog/${post.slug}`} className="block relative aspect-[16/9] w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
           <Image
-            src={post.coverImageUrl}
-            alt={post.title}
+            src={imageSrc}
+            alt={imageAlt}
             fill
             className="object-cover group-hover:scale-102 transition-transform duration-500"
             sizes="(max-width: 768px) 100vw, 50vw"

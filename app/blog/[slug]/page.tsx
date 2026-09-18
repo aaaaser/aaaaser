@@ -5,7 +5,8 @@ import Link from "next/link";
 import { getBlogPostBySlug, getProfile, getSiteSettings } from "@/lib/db";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { ArrowLeft, Clock, Calendar, Tag, Share2 } from "lucide-react";
+import { sanitizeHtml } from "@/lib/sanitize";
+import { ArrowLeft, Clock, Calendar, Tag, User } from "lucide-react";
 
 export const revalidate = 0;
 
@@ -20,17 +21,40 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   if (!post) {
     return {
-      title: "Article Not Found",
+      title: "Artikel Tidak Ditemukan",
     };
   }
 
+  const title = post.seoTitle || post.title;
+  const description = post.seoDescription || post.excerpt;
+  const image = post.thumbnail || post.coverImageUrl || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80";
+  const keywords = post.seoKeywords ? post.seoKeywords.split(",").map((k) => k.trim()) : post.tags;
+
   return {
-    title: `${post.title} — ${settings.siteName}`,
-    description: post.excerpt,
+    title: `${title} — ${settings.siteName}`,
+    description: description,
+    keywords: keywords,
+    authors: [{ name: post.author || "Alex Rivera" }],
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      images: [post.coverImageUrl],
+      title: title,
+      description: description,
+      type: "article",
+      publishedTime: new Date(post.publishedAt).toISOString(),
+      authors: [post.author || "Alex Rivera"],
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.thumbnailAlt || title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: [image],
     },
   };
 }
@@ -47,8 +71,13 @@ export default async function BlogPostDetailPage({ params }: BlogPostPageProps) 
     notFound();
   }
 
+  const sanitizedContent = sanitizeHtml(post.content);
+  const coverImage = post.thumbnail || post.coverImageUrl;
+  const coverAlt = post.thumbnailAlt || post.title;
+  const authorName = post.author || profile.name || "Alex Rivera";
+
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col font-sans selection:bg-neutral-200 dark:selection:bg-neutral-800">
       <Navbar siteName={settings.siteName} resumeUrl={profile.resumeUrl} />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-28 pb-20">
@@ -58,7 +87,7 @@ export default async function BlogPostDetailPage({ params }: BlogPostPageProps) 
           className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 mb-8 transition-colors group"
         >
           <ArrowLeft className="size-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back to all articles</span>
+          <span>Kembali ke semua artikel</span>
         </Link>
 
         {/* Article Header */}
@@ -99,7 +128,7 @@ export default async function BlogPostDetailPage({ params }: BlogPostPageProps) 
                 <div className="relative size-10 rounded-full overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900">
                   <Image
                     src={profile.avatarUrl}
-                    alt={profile.name}
+                    alt={authorName}
                     fill
                     className="object-cover"
                     sizes="40px"
@@ -107,72 +136,42 @@ export default async function BlogPostDetailPage({ params }: BlogPostPageProps) 
                   />
                 </div>
                 <div>
-                  <div className="font-bold text-neutral-900 dark:text-neutral-100">
-                    {profile.name}
+                  <div className="font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-1">
+                    <User className="size-3 text-neutral-400" />
+                    <span>{authorName}</span>
                   </div>
-                  <div className="text-neutral-400">{profile.roleTitle}</div>
+                  <div className="text-neutral-400">{profile.roleTitle || "Software Engineer & Designer"}</div>
                 </div>
               </div>
-
-              <button
-                type="button"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors cursor-pointer"
-              >
-                <Share2 className="size-3.5" />
-                <span>Share</span>
-              </button>
             </div>
           </div>
 
           {/* Hero / Cover Image */}
-          <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm bg-neutral-100 dark:bg-neutral-900">
-            <Image
-              src={post.coverImageUrl}
-              alt={post.title}
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 896px) 100vw, 896px"
-              referrerPolicy="no-referrer"
-            />
-          </div>
+          {coverImage && (
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-xs bg-neutral-100 dark:bg-neutral-900">
+              <Image
+                src={coverImage}
+                alt={coverAlt}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 896px) 100vw, 896px"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
 
-          {/* Article Body Content */}
-          <div className="prose prose-neutral dark:prose-invert max-w-none text-neutral-800 dark:text-neutral-200 font-sans leading-relaxed text-base pt-4">
-            {post.content.split("\n\n").map((paragraph, idx) => {
-              if (paragraph.startsWith("## ")) {
-                return (
-                  <h2
-                    key={idx}
-                    className="text-2xl font-bold font-mono tracking-tight text-neutral-900 dark:text-neutral-100 mt-10 mb-4"
-                  >
-                    {paragraph.replace("## ", "")}
-                  </h2>
-                );
-              }
-              if (paragraph.startsWith("### ")) {
-                return (
-                  <h3
-                    key={idx}
-                    className="text-xl font-bold font-mono tracking-tight text-neutral-900 dark:text-neutral-100 mt-8 mb-3"
-                  >
-                    {paragraph.replace("### ", "")}
-                  </h3>
-                );
-              }
-              return (
-                <p key={idx} className="mb-6 leading-relaxed text-neutral-700 dark:text-neutral-300">
-                  {paragraph}
-                </p>
-              );
-            })}
-          </div>
+          {/* Article Body Content (Sanitized HTML from TinyMCE) */}
+          <div
+            className="prose prose-neutral dark:prose-invert max-w-none text-neutral-800 dark:text-neutral-200 font-sans leading-relaxed text-base pt-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:font-mono [&_h2]:tracking-tight [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:font-mono [&_h3]:tracking-tight [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:mb-6 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-6 [&_li]:mb-1.5 [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:bg-neutral-900 [&_pre]:text-neutral-100 [&_pre]:border [&_pre]:border-neutral-800 [&_pre]:overflow-x-auto [&_code]:font-mono [&_code]:text-sm [&_blockquote]:border-l-2 [&_blockquote]:border-neutral-400 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-6 [&_img]:rounded-xl [&_img]:my-6"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
 
           {/* Tags */}
           <div className="pt-8 border-t border-neutral-200 dark:border-neutral-800">
             <div className="flex items-center gap-2 mb-3 text-xs font-mono text-neutral-500">
               <Tag className="size-3.5" />
-              <span>Related Topics:</span>
+              <span>Topik & Kategori Terkait:</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {post.tags.map((tag) => (

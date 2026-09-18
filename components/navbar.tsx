@@ -65,7 +65,10 @@ export function Navbar({ siteName = "Aaaaser", resumeUrl = "#" }: NavbarProps) {
             </Link>
           ))}
 
-          <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800 mx-2" />
+          <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800 mx-1.5" />
+
+          {/* Theme Toggle */}
+          <ThemeToggle className="mx-1" />
 
           {/* Resume Button */}
           {resumeUrl && (
@@ -84,13 +87,10 @@ export function Navbar({ siteName = "Aaaaser", resumeUrl = "#" }: NavbarProps) {
           <Link
             href="/admin"
             title="Admin Dashboard"
-            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors ml-1"
           >
             <ShieldCheck className="size-4" />
           </Link>
-
-          {/* Theme Toggle */}
-          <ThemeToggle className="ml-1" />
         </nav>
 
         {/* Mobile controls */}
